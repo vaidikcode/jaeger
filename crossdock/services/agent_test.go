@@ -81,6 +81,7 @@ func (h *testAgentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func TestGetSamplingRate(t *testing.T) {
+	t.Parallel()
 	logger := zap.NewExample()
 	handler := &testAgentHandler{logger: logger}
 	server := httptest.NewServer(handler)

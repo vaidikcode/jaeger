@@ -229,6 +229,7 @@ func TestCreateTrace(t *testing.T) {
 }
 
 func TestTraceHandlerGetTraces(t *testing.T) {
+	t.Parallel()
 	query := &mocks.QueryService{}
 	handler := NewTraceHandler(query, nil, zap.NewNop())
 	handler.getTracesSleepDuration = time.Millisecond
@@ -385,6 +386,7 @@ func TestValidateAdaptiveSamplingTraces(t *testing.T) {
 }
 
 func TestAdaptiveSamplingTestInternal(t *testing.T) {
+	t.Parallel()
 	server := httptest.NewServer(&testClientHandler{})
 	defer server.Close()
 
@@ -415,6 +417,7 @@ func TestAdaptiveSamplingTestInternal(t *testing.T) {
 
 	for i, test := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			t.Parallel()
 			query := &mocks.QueryService{}
 			agent := &mocks.AgentService{}
 
@@ -449,6 +452,7 @@ func TestAdaptiveSamplingTestInternal(t *testing.T) {
 }
 
 func TestEndToEndTest(t *testing.T) {
+	t.Parallel()
 	query := &mocks.QueryService{}
 	agent := &mocks.AgentService{}
 	cT := &mocks.T{}
@@ -485,6 +489,7 @@ func TestEndToEndTest(t *testing.T) {
 }
 
 func TestAdaptiveSamplingTest(t *testing.T) {
+	t.Parallel()
 	server := httptest.NewServer(&testClientHandler{})
 	defer server.Close()
 
