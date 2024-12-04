@@ -16,4 +16,4 @@ permissions:
 
 jobs:
   badger:
-    uses: ./.github/workflows/dummy-workflow.yml@main
+    uses: ./.github/workflows/dummy-workflow.yml
