@@ -1,12 +1,8 @@
-name: Dummy Workflow
-
-on:
+name: Workflow B
 
 jobs:
-  example-job:
+  reusable-job:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Print Hello
-        run: echo "Hello, world!"
+      - name: Step in Workflow B
+        run: echo "This is Workflow B, only called by Workflow A."
