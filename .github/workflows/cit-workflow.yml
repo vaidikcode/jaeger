@@ -2,11 +2,11 @@ name: Combined CIT Workflow
 
 on:
   push:
-    branches: [main]
+    branches: [test]
 
   pull_request:
-    branches: [main]
-#testing on branch without PR
+    branches: [test]
+#testing on branch without Pr
 permissions:
   contents: read
 
