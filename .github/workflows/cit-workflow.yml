@@ -6,7 +6,7 @@ on:
 
   pull_request:
     branches: [main]
-
+    
 permissions:
   contents: read
 
@@ -31,3 +31,4 @@ jobs:
 
   opensearch:
     uses: ./.github/workflows/ci-e2e-opensearch.yml
+
