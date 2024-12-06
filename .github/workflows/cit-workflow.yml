@@ -6,7 +6,7 @@ on:
 
   pull_request:
     branches: [main]
-#testing on branch without pr
+#testing on branch without PR
 permissions:
   contents: read
 
