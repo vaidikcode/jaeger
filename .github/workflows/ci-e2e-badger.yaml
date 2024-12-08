@@ -34,10 +34,15 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc libc-dev python3-dev
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests github  # Install only required dependencies
+          pip install requests github
 
       - name: Run Badger storage integration tests
         run: |
@@ -63,4 +68,5 @@ jobs:
         with:
           files: cover.out
           flags: badger_${{ matrix.version }}
+
 
