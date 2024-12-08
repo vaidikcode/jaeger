@@ -19,49 +19,48 @@ jobs:
       matrix:
         version: [v1, v2]
     steps:
-    - name: Harden Runner
-      uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
-      with:
-        egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
+      - name: Harden Runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit # TODO: change to 'egress-policy: block' after couple of runs
 
-    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
 
-    - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed # v5.1.0
-      with:
-        go-version: 1.23.x
+      - uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed # v5.1.0
+        with:
+          go-version: 1.23.x
 
-    - name: Run Badger storage integration tests
-      run: |
-        case ${{ matrix.version }} in
-          v1)
-            make badger-storage-integration-test
-            ;;
-          v2)
-            STORAGE=badger make jaeger-v2-storage-integration-test
-            ;;
-        esac
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
 
-    - name: Scrape Metrics
-      run: |
-        case ${{ matrix.version }} in
-          v1)
-            prom2json http://localhost:14269/metrics > badger_v1_metrics.json
-            ;;
-          v2)
-            prom2json http://localhost:8888/metrics > badger_v2_metrics.json
-            ;;
-        esac
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Upload Metrics as Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: badger-metrics-${{ matrix.version }}
-        path: |
-          badger_v1_metrics.json
-          badger_v2_metrics.json
+      - name: Run Badger storage integration tests
+        run: |
+          case ${{ matrix.version }} in
+            v1)
+              make badger-storage-integration-test
+              ;;
+            v2)
+              STORAGE=badger make jaeger-v2-storage-integration-test
+              ;;
+          esac
 
-    - name: Upload coverage to codecov
-      uses: ./.github/actions/upload-codecov
-      with:
-        files: cover.out
-        flags: badger_${{ matrix.version }}
+      - name: Scrape Metrics and Upload Artifacts
+        run: |
+          python3 helper_metrics_scraper.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: Upload coverage to codecov
+        uses: ./.github/actions/upload-codecov
+        with:
+          files: cover.out
+          flags: badger_${{ matrix.version }}
