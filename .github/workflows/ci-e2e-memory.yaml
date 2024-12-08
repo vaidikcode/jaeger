@@ -30,6 +30,16 @@ jobs:
       run: |
         STORAGE=memory_v2 make jaeger-v2-storage-integration-test
 
+    - name: Scrape Metrics
+      run: |
+        prom2json http://localhost:8888/metrics > memory_v2_metrics.json
+
+    - name: Upload Metrics as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: memory-v2-metrics
+        path: memory_v2_metrics.json
+
     - name: Upload coverage to codecov
       uses: ./.github/actions/upload-codecov
       with:

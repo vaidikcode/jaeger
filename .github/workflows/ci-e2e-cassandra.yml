@@ -49,6 +49,25 @@ jobs:
       env:
         SKIP_APPLY_SCHEMA: ${{ matrix.create-schema == 'auto' && true || false }}
 
+    - name: Scrape Metrics
+      run: |
+        case ${{ matrix.jaeger-version }} in
+          v1)
+            prom2json http://localhost:14269/metrics > cassandra_v1_metrics.json
+            ;;
+          v2)
+            prom2json http://localhost:8888/metrics > cassandra_v2_metrics.json
+            ;;
+        esac
+
+    - name: Upload Metrics as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: cassandra-metrics-${{ matrix.jaeger-version }}
+        path: |
+          cassandra_v1_metrics.json
+          cassandra_v2_metrics.json
+
     - name: Upload coverage to codecov
       uses: ./.github/actions/upload-codecov
       with:

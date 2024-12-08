@@ -59,6 +59,25 @@ jobs:
       id: test-execution
       run: bash scripts/es-integration-test.sh ${{ matrix.version.distribution }} ${{ matrix.version.major }} ${{ matrix.version.jaeger }}
 
+    - name: Scrape Metrics
+      run: |
+        case ${{ matrix.version.jaeger }} in
+          v1)
+            prom2json http://localhost:14269/metrics > elasticsearch_v1_metrics.json
+            ;;
+          v2)
+            prom2json http://localhost:8888/metrics > elasticsearch_v2_metrics.json
+            ;;
+        esac
+
+    - name: Upload Metrics as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: elasticsearch-metrics-${{ matrix.version.jaeger }}
+        path: |
+          elasticsearch_v1_metrics.json
+          elasticsearch_v2_metrics.json
+
     - name: Upload coverage to codecov
       uses: ./.github/actions/upload-codecov
       with:

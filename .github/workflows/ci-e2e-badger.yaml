@@ -41,6 +41,25 @@ jobs:
             ;;
         esac
 
+    - name: Scrape Metrics
+      run: |
+        case ${{ matrix.version }} in
+          v1)
+            prom2json http://localhost:14269/metrics > badger_v1_metrics.json
+            ;;
+          v2)
+            prom2json http://localhost:8888/metrics > badger_v2_metrics.json
+            ;;
+        esac
+
+    - name: Upload Metrics as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: badger-metrics-${{ matrix.version }}
+        path: |
+          badger_v1_metrics.json
+          badger_v2_metrics.json
+
     - name: Upload coverage to codecov
       uses: ./.github/actions/upload-codecov
       with:
