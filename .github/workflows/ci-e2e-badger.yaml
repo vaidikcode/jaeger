@@ -7,8 +7,7 @@ concurrency:
   group: cit-badger-${{ github.workflow }}-${{ (github.event.pull_request && github.event.pull_request.number) || github.ref || github.run_id }}
   cancel-in-progress: true
 
-# See https://github.com/ossf/scorecard/blob/main/docs/checks.md#token-permissions
-permissions:  # added using https://github.com/step-security/secure-workflows
+permissions:
   contents: read
 
 jobs:
@@ -38,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install requests github  # Install only required dependencies
 
       - name: Run Badger storage integration tests
         run: |
@@ -64,3 +63,4 @@ jobs:
         with:
           files: cover.out
           flags: badger_${{ matrix.version }}
+
