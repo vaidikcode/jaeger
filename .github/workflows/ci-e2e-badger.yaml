@@ -43,9 +43,9 @@ jobs:
       # Add step to run the helper script
       - name: Run Helper Script to Scrape and Upload Metrics
         run: |
-          chmod +x ./scripts/utils/helper-matrics-scrapper.py
+          chmod +x scripts/utils/helper_matrics_scrapper.py
           
-          python3 ./scripts/utils/helper-matrics-scrapper.py --metrics-path v1-metrics.json --storage-path v2-metrics.json --output-path ./metrics_output
+          python3 scripts/utils/helper_matrics_scrapper.py --metrics-path v1-metrics.json --storage-path v2-metrics.json --output-path ./metrics_output
 
       - name: Upload coverage to codecov
         uses: ./.github/actions/upload-codecov
