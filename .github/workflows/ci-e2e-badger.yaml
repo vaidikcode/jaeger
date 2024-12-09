@@ -29,6 +29,11 @@ jobs:
         with:
           go-version: 1.23.x
 
+      - name: Install prom2json
+        run: go install github.com/prometheus/prom2json@latest
+        env:
+          GOBIN: /usr/local/bin
+
       - name: Prepare Metrics Output Directory
         run: mkdir -p ./metrics_output
 
@@ -50,12 +55,15 @@ jobs:
             --v1-endpoint http://localhost:14269/metrics \
             --v2-endpoint http://localhost:8888/metrics \
             --output-dir ./metrics_output
+        env:
+          PATH: /usr/local/bin:${{ env.PATH }}
 
       - name: Upload coverage to codecov
         uses: ./.github/actions/upload-codecov
         with:
           files: cover.out
           flags: badger_${{ matrix.version }}
+
 
 
 
