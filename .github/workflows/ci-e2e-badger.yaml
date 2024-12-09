@@ -19,7 +19,7 @@ jobs:
         version: [v1, v2]
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        uses: step-security/harden-runner@v2.10.1
         with:
           egress-policy: audit
 
@@ -29,6 +29,12 @@ jobs:
         with:
           go-version: 1.23.x
 
+      # Install Python 3
+      - name: Set up Python 3
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
       - name: Install prom2json
         run: go install github.com/prometheus/prom2json/cmd/prom2json@latest
         env:
@@ -37,7 +43,11 @@ jobs:
       - name: Prepare Metrics Output Directory
         run: mkdir -p ./metrics_output
 
+      - name: Debug matrix version
+        run: echo "Matrix version: ${{ matrix.version }}"
+
       - name: Run Badger storage integration tests
+        shell: bash
         run: |
           case ${{ matrix.version }} in
             v1)
@@ -62,6 +72,7 @@ jobs:
         with:
           files: cover.out
           flags: badger_${{ matrix.version }}
+
 
 
 
