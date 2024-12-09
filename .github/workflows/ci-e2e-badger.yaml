@@ -45,6 +45,23 @@ jobs:
               ;;
             v2)
               STORAGE=badger make jaeger-v2-storage-integration-test
+              ;;
+          esac
+
+      - name: Run Helper Script to Scrape and Upload Metrics
+        run: |
+          python3 scripts/utils/helper_matrics_scrapper.py \
+            --v1-endpoint http://localhost:14269/metrics \
+            --v2-endpoint http://localhost:8888/metrics \
+            --output-dir ./metrics_output
+        env:
+          PATH: /usr/local/bin:${{ env.PATH }}
+
+      - name: Upload coverage to codecov
+        uses: ./.github/actions/upload-codecov
+        with:
+          files: cover.out
+          flags: badger_${{ matrix.version }}
 
 
 
