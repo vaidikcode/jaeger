@@ -43,9 +43,6 @@ jobs:
       - name: Prepare Metrics Output Directory
         run: mkdir -p ./metrics_output
 
-      - name: Debug matrix version
-        run: echo "Matrix version: ${{ matrix.version }}"
-
       - name: Run Badger storage integration tests
         shell: bash
         run: |
