@@ -30,7 +30,7 @@ jobs:
           go-version: 1.23.x
 
       - name: Install prom2json
-        run: go install github.com/prometheus/prom2json@latest
+        run: go install github.com/prometheus/prom2json/cmd/prom2json@latest
         env:
           GOBIN: /usr/local/bin
 
@@ -63,6 +63,7 @@ jobs:
         with:
           files: cover.out
           flags: badger_${{ matrix.version }}
+
 
 
 
