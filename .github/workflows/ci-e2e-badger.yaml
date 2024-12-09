@@ -40,18 +40,24 @@ jobs:
               ;;
           esac
 
-      # Add step to run the helper script
+      # Add step to run the helper script with correct arguments
       - name: Run Helper Script to Scrape and Upload Metrics
         run: |
+          # Ensure that the helper script is available and executable
           chmod +x scripts/utils/helper_matrics_scrapper.py
           
-          python3 scripts/utils/helper_matrics_scrapper.py --metrics-path v1-metrics.json --storage-path v2-metrics.json --output-path ./metrics_output
+          # Run the helper script with required arguments
+          python3 scripts/utils/helper_matrics_scrapper.py \
+            --v1-endpoint http://localhost:14269/metrics \
+            --v2-endpoint http://localhost:8888/metrics \
+            --output-dir ./metrics_output
 
       - name: Upload coverage to codecov
         uses: ./.github/actions/upload-codecov
         with:
           files: cover.out
           flags: badger_${{ matrix.version }}
+
 
 
 
